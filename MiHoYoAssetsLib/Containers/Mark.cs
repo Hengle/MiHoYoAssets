@@ -1,4 +1,4 @@
-﻿namespace MiHoYoAssets.Containers
+﻿namespace MiHoYoAssetsLib.Containers
 {
     public static class Mark
     {

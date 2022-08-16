@@ -1,15 +1,27 @@
 # MiHoYoAssets
 Some features are:
 ```
+- CLI/GUI.
 - Decrypt assets into readable "CAB-" files.
 - Encrypt assets from "CAB-" files.
 ```
 _____________________________________________________________________________________________________________________________
-How to use:
+How to use CLI:
 ```
-MiHoYoAssets format [e] input_path output_path
+MiHoYoAssets 1.1.0
+Copyright (c) 2022 All Right Reserved
 
-Decrypt is default, Set 'e' only when encrypt.
+  -f, --format            Required. Format to process.
+
+  -e, --encrypt           Enbale encryption (default is decryption).
+
+  --help                  Display this help screen.
+
+  --version               Display version information.
+
+  input_path (pos. 0)     Required. Input to process.
+
+  output_path (pos. 1)    Required. Output Directory.
 ```
 _____________________________________________________________________________________________________________________________
 Special Thank to:

@@ -1,48 +1,83 @@
-﻿
-if (args.Length != 3 && args.Length != 4)
+namespace MiHoYoAssets
 {
-    ShowHelp();
-}
-else
-{
-    try
+    internal static class Program
     {
-        var formatName = args[0];
-        var format = FormatManager.GetFormat(formatName);
+        /// <summary>
+        ///  The main entry point for the application.
+        /// </summary>
+        /// 
+        [STAThread]
+        static void Main(string[] args)
+        {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            if (args.Length == 0)
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new MiHoYoForm());
+            }
+            else
+            {
+                CreateConsole();
+                var parser = new Parser(config =>
+                {
+                    config.AutoHelp = true;
+                    config.AutoVersion = true;
+                    config.HelpWriter = Console.Out;
+                });
+                parser.ParseArguments<Options>(args)
+                .WithParsed(o =>
+                {
+                    try
+                    {
+                        var format = FormatManager.GetFormat(o.Format);
+                        format.Process(o.Input, o.Output, o.IsEncrypt);
+                    }
+                    catch (NotImplementedException)
+                    {
+                        Console.WriteLine("This feature is not supported yet !!");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.ReadKey();
+                    }
+                })
+                .WithNotParsed(o =>
+                {
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                });
+            }
+        }
 
-        bool isEncrypt = false;
-        if (args.Length == 4 && args[1] == "e")
-            isEncrypt = true;
+        public static void CreateConsole()
+        {
+            AllocConsole();
+            SetConsoleTitle(Application.ProductName);
+        }
 
-        var input = args[^2];
-        var output = args[^1];
-        format.Process(input, output, isEncrypt);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool SetConsoleTitle(string lpConsoleTitle);
     }
-    catch(NotImplementedException)
+
+    public class Options
     {
-        Console.WriteLine("This feature is not supported yet !!");
+        [Option('f', "format", Required = true, HelpText = "Format to process.")]
+        public string Format { get; set; }
+
+        [Option('e', "encrypt", HelpText = "Enbale encryption (default is decryption).")]
+        public bool IsEncrypt { get; set; }
+
+        [Value(0, MetaName = "input_path", Required = true, HelpText = "Input to process.")]
+        public string Input { get; set; }
+
+        [Value(1, MetaName = "output_path", Required = true, HelpText = "Output Directory.")]
+        public string Output { get; set; }
     }
-    catch(Exception e)
-    {
-        Console.WriteLine(e.Message);
-        Console.ReadKey();
-    }
-}
-
-void ShowHelp()
-{
-    var versionString = Assembly.GetEntryAssembly()?
-                                            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-                                            .InformationalVersion
-                                            .ToString();
-
-    Console.WriteLine(@$"MiHoYoAssets v{versionString}
-------------------------
-Usage:
-    MiHoYoAssets format [e] input_path output_path
-
-Available formats:
-{FormatManager.GetFormats()} 
-
-Decrypt is default, Set 'e' only when encrypt.");
 }

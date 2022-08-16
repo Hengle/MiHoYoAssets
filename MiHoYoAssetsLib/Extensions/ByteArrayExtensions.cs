@@ -1,4 +1,4 @@
-﻿namespace MiHoYoAssets.Extensions
+﻿namespace MiHoYoAssetsLib.Extensions
 {
     public static class ByteArrayExtensions
     {

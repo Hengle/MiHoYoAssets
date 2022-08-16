@@ -1,4 +1,4 @@
-﻿namespace MiHoYoAssets.Formats
+﻿namespace MiHoYoAssetsLib.Formats
 {
     public class BH3 : Format
     {
@@ -58,7 +58,8 @@
                 };
                 DecryptHeader(header, key);
                 var bundle = new Bundle(header, true, ExpansionKey, Key, ConstKey, SBox);
-                reader.Position += 0x12;
+                var encUnityVersion = reader.ReadStringToNull();
+                var encUnityRevision = reader.ReadStringToNull();
                 bundle.Process(ref reader, output);
             }
         }

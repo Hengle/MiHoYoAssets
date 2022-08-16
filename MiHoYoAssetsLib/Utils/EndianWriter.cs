@@ -1,4 +1,4 @@
-﻿namespace MiHoYoAssets.Utils
+﻿namespace MiHoYoAssetsLib.Utils
 {
     public ref struct EndianWriter
     {

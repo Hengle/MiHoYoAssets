@@ -1,4 +1,4 @@
-﻿namespace MiHoYoAssets.Managers
+﻿namespace MiHoYoAssetsLib.Managers
 {
     public static class FormatManager
     {
@@ -22,14 +22,15 @@
 
             return format;
         }
-        public static string GetFormats() => string.Join("\n", Formats.Values);
+        public static string ToString() => string.Join("\n", Formats.Values);
+        public static Format[] GetFormats() => Formats.Values.ToArray();
     }
     public abstract class Format
     {
         public string Name;
         public string DisplayName;
-        protected (string, string) Pattern;
-        protected (string, string) Extension;
+        public (string, string) Pattern;
+        public (string, string) Extension;
         protected abstract void Decrypt(string input, string output);
         protected abstract void Encrypt(string input, string output);
         protected virtual (string, string)[] CollectPaths(string input, string output, bool isEncrypt)

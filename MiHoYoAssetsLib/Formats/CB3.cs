@@ -1,6 +1,6 @@
-﻿namespace MiHoYoAssets.Formats
+﻿namespace MiHoYoAssetsLib.Formats
 {
-    public class CB2 : Format
+    public class CB3 : Format
     {
         private const string Signature = "blk";
         private const int HeaderSize = 0x2A;
@@ -9,10 +9,10 @@
         private static readonly byte[] ConstKey = new byte[] { 0xA2, 0x25, 0x25, 0x99, 0xB7, 0x62, 0xF4, 0x39, 0x28, 0xE1, 0xB7, 0x73, 0x91, 0x05, 0x25, 0x87 };
         private static readonly ulong Const = 0xCEAC3B5A867837AC;
 
-        public CB2()
+        public CB3()
         {
-            Name = "CB2";
-            DisplayName = "Genshin Impact - CB2 Beta";
+            Name = "CB3";
+            DisplayName = "Genshin Impact - CB3 Beta";
             Pattern = ("*.blk", "*.unity3d");
             Extension = (".unity3d", ".blk");
         }

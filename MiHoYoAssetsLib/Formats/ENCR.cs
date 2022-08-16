@@ -1,4 +1,4 @@
-﻿namespace MiHoYoAssets.Formats
+﻿namespace MiHoYoAssetsLib.Formats
 {
     public class ENCR : Format
     {
