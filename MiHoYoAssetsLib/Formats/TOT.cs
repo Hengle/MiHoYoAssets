@@ -58,7 +58,7 @@
                     UncompressedBlocksInfoSize = reader.ReadInt32(),
                     Flags = reader.ReadInt32(),
                 };
-                var bundle = new Bundle(header, true, ExpansionKey, Key, ConstKey, BlockKey);
+                var bundle = new Bundle(header, true, ExpansionKey, Key, ConstKey, blockKey: BlockKey);
                 bundle.Process(ref reader, output);
             }
         }

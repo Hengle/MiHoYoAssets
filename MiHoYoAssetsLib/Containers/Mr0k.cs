@@ -2,7 +2,7 @@
 {
     public static class Mr0k
     {
-        public static int Decrypt(byte[] bytes, ref int size, byte[] expansionKey, byte[] key, byte[] constKey = null, byte[] sbox = null, byte[] blockKey = null)
+        public static byte[] Decrypt(byte[] bytes, ref int size, byte[] expansionKey, byte[] key, byte[] constKey = null, byte[] sbox = null, byte[] blockKey = null)
         {
 			var key1 = new byte[0x10];
 			var key2 = new byte[0x10];
@@ -52,6 +52,7 @@
 			Buffer.BlockCopy(encryptedBlock, 0, bytes, 0x94, encryptedBlockSize);
 
 			size -= 0x14;
+			bytes = bytes.AsSpan(0x14).ToArray();
 
             if (blockKey != null)
             {
@@ -62,7 +63,7 @@
 
             }
 
-            return 0x14;
+            return bytes;
 		}
 
         public static bool IsMr0k(byte[] bytes)

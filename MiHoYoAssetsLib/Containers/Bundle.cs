@@ -49,13 +49,12 @@
             var compressedBytes = reader.ReadBytes(compressedSize);
             var uncompressedSize = m_Header.UncompressedBlocksInfoSize;
             var uncompressedBytes = new byte[uncompressedSize];
-            int offset = 0;
             var compressionType = (CompressionType)(m_Header.Flags % 0x40);
             switch (compressionType)
             {
                 case CompressionType.Lz4:
                 case CompressionType.Lz4HC:
-                    var numWrite = LZ4Codec.Decode(compressedBytes, offset, compressedSize, uncompressedBytes, 0, uncompressedSize);
+                    var numWrite = LZ4Codec.Decode(compressedBytes, 0, compressedSize, uncompressedBytes, 0, uncompressedSize);
                     if (numWrite != uncompressedSize)
                     {
                         throw new IOException($"Lz4 decompression error, write {numWrite} bytes but expected {uncompressedSize} bytes");
@@ -64,7 +63,7 @@
                 case CompressionType.Lz4Mr0k:
                     if (Mr0k.IsMr0k(compressedBytes))
                     {
-                        offset = Mr0k.Decrypt(compressedBytes, ref compressedSize, ExtensionKey, Key, ConstKey, SBox);
+                        compressedBytes = Mr0k.Decrypt(compressedBytes, ref compressedSize, ExtensionKey, Key, ConstKey, SBox, BlockKey);
                     }
                     if (compressedSize < 0x10)
                     {
@@ -115,20 +114,19 @@
 
         private void ReadBlocks(ref EndianReader reader)
         {
-            var compressedBytes = new byte[MaxCompressedSize];
-            var uncompressedBytes = new byte[MaxUncompressedSize];
             foreach (var blockInfo in BlocksInfo)
             {
                 var compressedSize = blockInfo.CompressedSize;
+                var compressedBytes = new byte[compressedSize];
                 var uncompressedSize = blockInfo.UncompressedSize;
+                var uncompressedBytes = new byte[uncompressedSize];
                 reader.Read(compressedBytes, 0, compressedSize);
-                var offset = 0;
                 var compressionType = (CompressionType)(blockInfo.Flags % 0x40);
                 switch (compressionType)
                 {
                     case CompressionType.Lz4:
                     case CompressionType.Lz4HC:
-                        var numWrite = LZ4Codec.Decode(compressedBytes, offset, compressedSize, uncompressedBytes, 0, uncompressedSize);
+                        var numWrite = LZ4Codec.Decode(compressedBytes, 0, compressedSize, uncompressedBytes, 0, uncompressedSize);
                         if (numWrite != uncompressedSize)
                         {
                             throw new IOException($"Lz4 decompression error, write {numWrite} bytes but expected {uncompressedSize} bytes");
@@ -137,7 +135,7 @@
                     case CompressionType.Lz4Mr0k:
                         if (Mr0k.IsMr0k(compressedBytes))
                         {
-                            offset = Mr0k.Decrypt(compressedBytes, ref compressedSize, ExtensionKey, Key, ConstKey, SBox, BlockKey);
+                            compressedBytes = Mr0k.Decrypt(compressedBytes, ref compressedSize, ExtensionKey, Key, ConstKey, SBox, BlockKey);
                         }
                         if (compressedSize < 0x10)
                         {

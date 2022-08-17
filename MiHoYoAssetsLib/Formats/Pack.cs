@@ -77,8 +77,7 @@
             {
                 if (IsMr0k)
                 {
-                    var offset = Mr0k.Decrypt(Data, ref BlockSize, ExpansionKey, Key);
-                    Data = Data[offset..BlockSize];
+                    Data = Mr0k.Decrypt(Data, ref BlockSize, ExpansionKey, Key);
                 }
             }
         }
