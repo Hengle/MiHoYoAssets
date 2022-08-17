@@ -40,24 +40,27 @@
         protected override void Decrypt(string input, string output)
         {
             var reader = new EndianReader(input, 0, EndianType.BigEndian);
-            var signature = reader.ReadStringToNull();
-            if (signature != Signature)
+            while(reader.Remaining > 0)
             {
-                throw new InvalidOperationException($"Expected signature UnityFS, got {signature} instead !!");
-            }
+                var signature = reader.ReadStringToNull();
+                if (signature != Signature)
+                {
+                    throw new InvalidOperationException($"Expected signature UnityFS, got {signature} instead !!");
+                }
 
-            var version = reader.ReadUInt32();
-            var unityVersion = reader.ReadStringToNull();
-            var unityRevision = reader.ReadStringToNull();
-            var header = new Bundle.Header()
-            {
-                Size = reader.ReadInt64(),
-                CompressedBlocksInfoSize = reader.ReadInt32(),
-                UncompressedBlocksInfoSize = reader.ReadInt32(),
-                Flags = reader.ReadInt32(),
-            };
-            var bundle = new Bundle(header, true, ExpansionKey, Key, ConstKey, BlockKey);
-            bundle.Process(ref reader, output);
+                var version = reader.ReadUInt32();
+                var unityVersion = reader.ReadStringToNull();
+                var unityRevision = reader.ReadStringToNull();
+                var header = new Bundle.Header()
+                {
+                    Size = reader.ReadInt64(),
+                    CompressedBlocksInfoSize = reader.ReadInt32(),
+                    UncompressedBlocksInfoSize = reader.ReadInt32(),
+                    Flags = reader.ReadInt32(),
+                };
+                var bundle = new Bundle(header, true, ExpansionKey, Key, ConstKey, BlockKey);
+                bundle.Process(ref reader, output);
+            }
         }
 
         protected override void Encrypt(string input, string output)
