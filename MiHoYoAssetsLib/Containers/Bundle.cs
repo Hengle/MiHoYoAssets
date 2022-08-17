@@ -13,10 +13,11 @@
         private readonly byte[] Key;
         private readonly byte[] ConstKey;
         private readonly byte[] SBox;
+        private readonly byte[] BlockKey;
 
         private int MaxCompressedSize => BlocksInfo.Max(x => x.CompressedSize);
         private int MaxUncompressedSize => BlocksInfo.Max(x => x.UncompressedSize);
-        public Bundle(Header header, bool hasDataHash, byte[] expansionKey = null, byte[] key = null, byte[] constKey = null, byte[] sbox = null)
+        public Bundle(Header header, bool hasDataHash, byte[] expansionKey = null, byte[] key = null, byte[] constKey = null, byte[] sbox = null, byte[] blockKey = null)
         {
             m_Header = header;
             HasDataHash = hasDataHash;
@@ -24,6 +25,7 @@
             Key = key;
             ConstKey = constKey;
             SBox = sbox;
+            BlockKey = blockKey;
         }
 
         public void Process(ref EndianReader reader, string output)
@@ -60,7 +62,7 @@
                     }
                     break;
                 case CompressionType.Lz4Mr0k:
-                    if (compressedSize > 0xFF)
+                    if (Mr0k.IsMr0k(compressedBytes))
                     {
                         offset = Mr0k.Decrypt(compressedBytes, ref compressedSize, ExtensionKey, Key, ConstKey, SBox);
                     }
@@ -133,9 +135,9 @@
                         }
                         break;
                     case CompressionType.Lz4Mr0k:
-                        if (compressedSize > 0xFF)
+                        if (Mr0k.IsMr0k(compressedBytes))
                         {
-                            offset = Mr0k.Decrypt(compressedBytes, ref compressedSize, ExtensionKey, Key, ConstKey, SBox);
+                            offset = Mr0k.Decrypt(compressedBytes, ref compressedSize, ExtensionKey, Key, ConstKey, SBox, BlockKey);
                         }
                         if (compressedSize < 0x10)
                         {

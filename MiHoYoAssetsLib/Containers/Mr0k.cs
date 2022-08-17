@@ -2,7 +2,7 @@
 {
     public static class Mr0k
     {
-        public static int Decrypt(byte[] bytes, ref int size, byte[] expansionKey, byte[] key, byte[] constKey = null, byte[] sbox = null)
+        public static int Decrypt(byte[] bytes, ref int size, byte[] expansionKey, byte[] key, byte[] constKey = null, byte[] sbox = null, byte[] blockKey = null)
         {
 			var key1 = new byte[0x10];
 			var key2 = new byte[0x10];
@@ -52,7 +52,24 @@
 			Buffer.BlockCopy(encryptedBlock, 0, bytes, 0x94, encryptedBlockSize);
 
 			size -= 0x14;
-			return 0x14;
+
+            if (blockKey != null)
+            {
+                for (int i = 0; i < 0xC00; i++)
+                {
+                    bytes[i] ^= blockKey[i % blockKey.Length];
+                }
+
+            }
+
+            return 0x14;
 		}
+
+        public static bool IsMr0k(byte[] bytes)
+        {
+			var reader = new EndianReader(bytes);
+            var header = reader.ReadStringToNull(4);
+            return header == "mr0k";
+        }
     }
 }
