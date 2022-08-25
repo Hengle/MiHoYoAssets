@@ -1,4 +1,9 @@
 # MiHoYoAssets
+_____________________________________________________________________________________________________________________________
+New Discord Server: 
+
+Join [here](https://discord.gg/WUDufMSt) for more discussions, questions and suggestions/feedback.
+_____________________________________________________________________________________________________________________________
 Some features are:
 ```
 - CLI/GUI.
