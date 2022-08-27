@@ -2,7 +2,7 @@
 _____________________________________________________________________________________________________________________________
 New Discord Server: 
 
-Join [here](https://discord.gg/WUDufMSt) for more discussions, questions and suggestions/feedback.
+Join [here](https://discord.gg/JAeB5jGdcn) for more discussions, questions and suggestions/feedback.
 _____________________________________________________________________________________________________________________________
 Some features are:
 ```
